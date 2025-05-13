@@ -7,46 +7,30 @@
 
 import SwiftUI
 
-public struct TrackableItemView<Content: View>: View {
+import SwiftUI
+
+struct TrackableItemView<Content: View>: View {
     let itemId: String
     let content: Content
-    
-    public init(itemId: String, @ViewBuilder content: () -> Content) {
+
+    init(itemId: String, @ViewBuilder content: () -> Content) {
         self.itemId = itemId
         self.content = content()
     }
-    
-    public var body: some View {
+
+    var body: some View {
         content
             .background(
-                GeometryReader { geo in
+                GeometryReader { proxy in
                     Color.clear
                         .onAppear {
-                            updateVisibility(geo: geo)
+                            ItemVisibilityTracker.shared.updateVisibleItem(itemId: itemId)
                         }
-                        .onChange(of: geo.frame(in: .global)) { _ in
-                            updateVisibility(geo: geo)
+                        .onDisappear {
+                            ItemVisibilityTracker.shared.clearVisibleItem(itemId: itemId)
                         }
                 }
             )
     }
-    
-    private func updateVisibility(geo: GeometryProxy) {
-        let screenHeight = getScreenHeight()
-        let isVisible = geo.frame(in: .global).minY < screenHeight && geo.frame(in: .global).maxY > 0
-        
-        if isVisible {
-            ItemVisibilityTracker.shared.updateVisibleItem(itemId: itemId)
-        }
-    }
-    
-    private func getScreenHeight() -> CGFloat {
-        #if os(iOS)
-        return UIScreen.main.bounds.height
-        #elseif os(macOS)
-        return NSScreen.main?.frame.height ?? 0
-        #else
-        return 0
-        #endif
-    }
 }
+
