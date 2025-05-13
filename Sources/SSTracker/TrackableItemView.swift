@@ -9,16 +9,16 @@ import SwiftUI
 
 import SwiftUI
 
-struct TrackableItemView<Content: View>: View {
+public struct TrackableItemView<Content: View>: View {
     let itemId: String
     let content: Content
 
-    init(itemId: String, @ViewBuilder content: () -> Content) {
+    public init(itemId: String, @ViewBuilder content: () -> Content) {
         self.itemId = itemId
         self.content = content()
     }
 
-    var body: some View {
+    public var body: some View {
         content
             .background(
                 GeometryReader { proxy in
