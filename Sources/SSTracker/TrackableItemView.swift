@@ -22,21 +22,24 @@ public struct TrackableItemView<Content: View>: View {
                 GeometryReader { geo in
                     Color.clear
                         .onAppear {
-                            ItemVisibilityTracker.shared.updateVisibleItem(itemId: itemId)
+                            updateVisibility(geo: geo)
                         }
-                        .onChange(of: geo.frame(in: .global)) { newFrame in
-                            let screenHeight = getScreenHeight()
-                            let isVisible = newFrame.minY < screenHeight && newFrame.maxY > 0
-                            
-                            if isVisible {
-                                ItemVisibilityTracker.shared.updateVisibleItem(itemId: itemId)
-                            }
+                        .onChange(of: geo.frame(in: .global)) { _ in
+                            updateVisibility(geo: geo)
                         }
                 }
             )
     }
     
-    /// Determine screen height based on platform
+    private func updateVisibility(geo: GeometryProxy) {
+        let screenHeight = getScreenHeight()
+        let isVisible = geo.frame(in: .global).minY < screenHeight && geo.frame(in: .global).maxY > 0
+        
+        if isVisible {
+            ItemVisibilityTracker.shared.updateVisibleItem(itemId: itemId)
+        }
+    }
+    
     private func getScreenHeight() -> CGFloat {
         #if os(iOS)
         return UIScreen.main.bounds.height
