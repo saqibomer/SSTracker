@@ -7,19 +7,19 @@
 
 import SwiftUI
 
-class ItemVisibilityTracker: ObservableObject {
-    static let shared = ItemVisibilityTracker()
+public class ItemVisibilityTracker: ObservableObject {
+    public static let shared = ItemVisibilityTracker()
 
-    @Published var currentVisibleItem: String? = nil
+    @Published public var currentVisibleItem: String? = nil
 
     private init() {}
 
-    func updateVisibleItem(itemId: String) {
+    public func updateVisibleItem(itemId: String) {
         currentVisibleItem = itemId
         print("Currently visible item: \(itemId)")
     }
 
-    func clearVisibleItem(itemId: String) {
+    public func clearVisibleItem(itemId: String) {
         if currentVisibleItem == itemId {
             currentVisibleItem = nil
         }
