@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "SSTracker",
     platforms: [
-        .macOS(.v10_15),
+        .macOS(.v11),
         .iOS(.v16)
     ],
     products: [
